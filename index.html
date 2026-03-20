@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Glam by Tanya · upgraded clickable search</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- RESET & BASE ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #fcf9f5; color: #2e241f; overflow-x: hidden; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+    .top-bar {
+      background: #1e3a3a; color: #f0eee7; padding: 8px 0; font-size: 0.9rem;
+    }
+    .top-bar .container { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    .top-delivery span { margin-right: 20px; }
+    .top-delivery i { margin-right: 6px; color: #d4b28c; }
+    .mpesa-badge { background: #1b5e3f; padding: 4px 12px; border-radius: 30px; color: white; font-size: 0.8rem; white-space: nowrap; }
+
+    /* ----- NAVBAR (FULLY FIXED FOR ALL SCREENS) ----- */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(145deg, #8b5e3c, #5f3e28);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+    .logo span {
+      font-size: 0.95rem;
+      display: block;
+      margin-top: -8px;
+      letter-spacing: 2px;
+      font-weight: 300;
+      color: #856f5a;
+      -webkit-text-fill-color: #856f5a;
+    }
+
+    /* desktop nav links */
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-weight: 500;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #3f332b;
+      transition: 0.2s;
+    }
+    .nav-links a:hover { color: #a67b56; }
+
+    .nav-icons {
+      display: flex;
+      gap: 26px;
+      font-size: 1.3rem;
+      color: #4f3e32;
+      position: relative;
+      align-items: center;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #c72a2a;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* HAMBURGER BUTTON */
+    .hamburger {
+      display: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #4f3e32;
+      margin-left: 15px;
+      transition: transform 0.1s ease;
+    }
+    .hamburger:active { transform: scale(0.96); }
+
+    /* MOBILE MENU OVERLAY - FULLY WORKING */
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 85%;
+      max-width: 360px;
+      height: 100vh;
+      background: #fffcf8;
+      box-shadow: 4px 0 28px rgba(0,0,0,0.2);
+      z-index: 2000;
+      transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      padding: 30px 28px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-menu-overlay.active { left: 0; }
+    .close-mobile {
+      font-size: 2.8rem;
+      background: none;
+      border: none;
+      color: #5f4d3f;
+      margin-bottom: 20px;
+      cursor: pointer;
+      align-self: flex-end;
+      line-height: 1;
+    }
+    .mobile-links-container {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .mobile-links-container a {
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #3f332b;
+      border-bottom: 1px solid #e6d5c8;
+      padding-bottom: 12px;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .mobile-links-container a:hover { color: #8b5e3c; }
+    .mobile-footer-icons {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eedbcb;
+      display: flex;
+      gap: 24px;
+      font-size: 1.5rem;
+      color: #8b6f55;
+    }
+    .overlay-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px);
+      z-index: 1999;
+      display: none;
+    }
+    .overlay-bg.active { display: block; }
+
+    /* ----- HERO SECTION - COMPLETELY UNTOUCHED ----- */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 5%;
+      box-sizing: border-box;
+      overflow: hidden;
+      background-color: #f2e7dd;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://res.cloudinary.com/dekdxx6yx/image/upload/v1773755299/glam_by_tanya_wigs_faec7v.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      color: #1e1e1e;
+      text-shadow: 0 2px 6px rgba(255, 240, 230, 0.8);
+    }
+    .icon-accent {
+      position: relative;
+      z-index: 3;
+      font-size: clamp(4rem, 10vw, 7rem);
+      color: #c7aa8a;
+      opacity: 0.85;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,0.15));
+      margin-right: 1rem;
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .hero { flex-direction: column; justify-content: center; min-height: 90vh; padding: 2rem 1.8rem; }
+      .hero-content { max-width: 100%; margin-bottom: 2rem; align-self: flex-start; }
+      .icon-accent { position: absolute; bottom: 2rem; right: 1.8rem; font-size: 4.5rem; }
+    }
+
+    /* ----- REST OF STYLES (preserved) ----- */
+    .promo-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 60px 0 70px;
+    }
+    .promo-card {
+      position: relative; border-radius: 30px; overflow: hidden; aspect-ratio: 4/5;
+      background-size: cover; background-position: center; transition: 0.25s ease;
+      box-shadow: 0 18px 28px -12px #2e1e12;
+    }
+    .promo-card:hover { transform: translateY(-8px); }
+    .card-wig { background-image: url('https://res.cloudinary.com/dekdxx6yx/image/upload/v1773755299/glam_by_tanya_wigs_faec7v.png'); }
+    .card-beauty { background-image: url('https://res.cloudinary.com/dekdxx6yx/image/upload/v1773754187/glam_image_furelm.png'); }
+    .card-nail { background-image: url('https://res.cloudinary.com/dekdxx6yx/image/upload/v1773755540/glam_by_tanya_nails_rysvot.png'); }
+    .overlay-gradient {
+      position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 50%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 28px 22px; color: white;
+    }
+    .overlay-gradient h3 { font-size: 2rem; font-family: 'Playfair Display', serif; }
+    .overlay-gradient p { margin-bottom: 18px; opacity: 0.9; }
+    .card-btn {
+      background: rgba(255,255,255,0.9); border: none; color: #2e241f; padding: 10px 24px;
+      border-radius: 40px; font-weight: 600; width: fit-content; cursor: pointer;
+    }
+    .section-title {
+      font-size: 2.2rem; font-family: 'Playfair Display', serif; text-align: center;
+      margin: 50px 0 20px;
+    }
+    .category-tag {
+      font-size: 1.8rem; font-weight: 500; margin: 40px 0 20px; color: #1e3a3a;
+      border-left: 8px solid #b48c6f; padding-left: 20px;
+    }
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; margin: 20px 0 40px;
+    }
+    .product-item {
+      background: white; border-radius: 24px; padding: 20px 12px 16px; text-align: center;
+      box-shadow: 0 10px 20px -8px rgba(80,60,40,0.1); transition: 0.1s;
+      border: 1px solid #f0e3d8;
+    }
+    .product-item:hover { box-shadow: 0 16px 24px -10px #9b7f64; }
+    .product-img {
+      background: #ece3db; border-radius: 18px; margin-bottom: 14px; aspect-ratio: 1/1;
+      display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #8b6f55;
+    }
+    .product-item h4 { font-size: 1rem; font-weight: 600; min-height: 48px; }
+    .price { font-weight: 700; color: #8b5e3c; margin: 10px 0 12px; font-size: 1.2rem; }
+    .add-to-cart {
+      background: #8b5e3c; border: none; color: white; padding: 8px 12px; border-radius: 40px;
+      font-weight: 500; width: 100%; cursor: pointer; font-size: 0.9rem;
+    }
+    .highlight {
+      box-shadow: 0 0 20px gold, 0 0 30px #ffd700;
+      transition: 0.5s;
+      border-radius: 24px;
+    }
+    .cart-overlay {
+      position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px); z-index: 3000; display: none; justify-content: flex-end;
+    }
+    .cart-panel {
+      width: 400px; max-width: 90vw; background: #fffcf8; height: 100vh; padding: 28px 24px;
+      overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+    }
+    .cart-header {
+      display: flex; justify-content: space-between; align-items: center; font-size: 1.8rem; margin-bottom: 24px;
+    }
+    .close-cart { background: none; border: none; font-size: 2.5rem; cursor: pointer; color: #5f4d3f; }
+    .cart-items { flex: 1; list-style: none; }
+    .cart-item {
+      display: flex; justify-content: space-between; background: #f1eae2; padding: 14px 16px;
+      border-radius: 20px; margin-bottom: 12px; align-items: center;
+    }
+    .cart-item-remove {
+      background: #e2cfc0; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer;
+    }
+    .cart-total { font-size: 1.6rem; font-weight: 700; margin: 20px 0; text-align: right; }
+    .checkout-btn {
+      background: #25D366; border: none; color: white; padding: 16px; border-radius: 60px; font-weight: 700;
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+    }
+    footer {
+      background: #e7dbcf; border-radius: 40px 40px 0 0; padding: 50px 0 30px; margin-top: 70px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 30px;
+    }
+    .newsletter-input { display: flex; background: white; border-radius: 60px; overflow: hidden; margin-top: 16px; }
+    .newsletter-input input { flex: 1; border: none; padding: 12px 16px; outline: none; }
+    .newsletter-input button { background: #8b5e3c; border: none; color: white; padding: 0 22px; font-weight: 600; cursor: pointer; }
+    .copyright { text-align: center; border-top: 1px solid #ccbbac; margin-top: 40px; padding-top: 24px; }
+
+    /* SEARCH BAR */
+    .search-section {
+      background: #ffffffd9;
+      backdrop-filter: blur(4px);
+      padding: 16px 0 8px 0;
+      border-bottom: 1px solid #eedbcb;
+      position: sticky;
+      top: 0;
+      z-index: 1800;
+    }
+    .search-wrapper {
+      display: flex; align-items: center; gap: 10px; max-width: 700px; margin: 0 auto;
+      background: white; border-radius: 60px; border: 1px solid #e7d2c0; padding: 0 18px;
+    }
+    #searchInput {
+      width: 100%; padding: 14px 6px 14px 0; border: none; font-size: 1.05rem; background: transparent; outline: none;
+    }
+    .search-clear { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #9b7f64; display: none; }
+    .search-clear.visible { display: block; }
+    .search-report {
+      max-width: 700px; margin: 6px auto 0; background: white; border-radius: 28px;
+      box-shadow: 0 16px 30px -10px #bd9f87; padding: 16px 20px; display: none; border: 1px solid #ecd9cb;
+      max-height: 380px; overflow-y: auto;
+    }
+    .search-report.active { display: block; }
+    .result-item {
+      display: flex; align-items: center; justify-content: space-between; padding: 8px 8px;
+      border-bottom: 1px solid #f1e2d6; gap: 8px; cursor: pointer;
+    }
+    .result-item:hover { background: #fbf3eb; border-radius: 18px; }
+    .result-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 2; }
+    .result-name { font-weight: 500; min-width: 120px; }
+    .result-cat { background: #f2e4d8; border-radius: 30px; padding: 4px 12px; font-size: 0.7rem; text-transform: capitalize; }
+    .result-price { font-weight: 600; color: #8b5e3c; }
+    .result-add-btn {
+      background: #8b5e3c; border: none; color: white; padding: 6px 16px; border-radius: 40px;
+      font-weight: 500; font-size: 0.8rem; cursor: pointer;
+    }
+
+    @media (max-width: 800px) {
+      .promo-grid, .footer-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: inline-block; }
+      .navbar .nav-icons { order: 2; }
+      .hamburger { order: 3; }
+      .logo { order: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay-bg" id="overlayBg"></div>
+  <!-- MOBILE MENU - FULLY FUNCTIONAL -->
+  <div class="mobile-menu-overlay" id="mobileMenu">
+    <button class="close-mobile" id="closeMobileBtn">&times;</button>
+    <div class="mobile-links-container">
+      <a href="index.html">Home</a>
+      <a href="aboutus.html">About us</a>
+      <a href="services.html">Our services</a>
+      <a href="blog.html">Blog</a>
+      <a href="contactus.html">Contact</a>
+    </div>
+    <div class="mobile-footer-icons">
+      <i class="fab fa-instagram"></i>
+      <i class="fab fa-facebook-f"></i>
+      <i class="fab fa-whatsapp"></i>
+    </div>
+  </div>
+
+  <!-- top bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-delivery"><span><i class="fas fa-truck"></i> Nairobi 24h – M-PESA on delivery – KSh.250</span><span><i class="fas fa-map-pin"></i> Nairobi CBD Dynamic Mall 1st Flr ml64</span></div>
+      <div class="mpesa-badge"><i class="fas fa-mobile-alt"></i> Till: 6055407</div>
+    </div>
+  </div>
+
+  <!-- SEARCH BAR -->
+  <div class="search-section">
+    <div class="container" style="max-width: 900px;">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search for foundation, wig, lipstick... (live results)">
+        <button class="search-clear" id="searchClearBtn"><i class="fas fa-times-circle"></i></button>
+      </div>
+      <div class="search-report" id="searchReport"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- NAVBAR WITH WORKING HAMBURGER -->
+    <nav class="navbar">
+      <div class="logo">Glam By Tanya</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About us</a>
+        <a href="services.html">Our services</a>
+        <a href="blog.html">Blog</a>
+        <a href="contactus.html">Contact</a>
+      </div>
+      <div class="nav-icons">
+        <i class="fas fa-search"></i>
+        <i class="fas fa-user"></i>
+        <i class="fas fa-shopping-bag" id="cartToggle"></i>
+        <span class="cart-badge" id="cartCount">0</span>
+      </div>
+      <div class="hamburger" id="hamburgerBtn">☰</div>
+    </nav>
+
+    <!-- HERO SECTION - COMPLETELY UNTOUCHED -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content"></div>
+      <div class="icon-accent"><i class="fas fa-spa"></i></div>
+    </section>
+
+    <!-- promo grid -->
+    <div class="promo-grid">
+      <div class="promo-card card-wig"><div class="overlay-gradient"><h3>Wig Wonderland</h3><p>Lace fronts, human hair, headband wigs & more.</p><button class="card-btn" data-cat="wigs">Shop Wigs →</button></div></div>
+      <div class="promo-card card-beauty"><div class="overlay-gradient"><h3>Cosmetics + Skincare</h3><p>Makeup, serums, moisturizers, and glow.</p><button class="card-btn" data-cat="beauty">Shop Beauty →</button></div></div>
+      <div class="promo-card card-nail"><div class="overlay-gradient"><h3>Nail Perfection</h3><p>Gel polish, acrylic kits, lamps & tools.</p><button class="card-btn" data-cat="nails">Shop Nails →</button></div></div>
+    </div>
+
+    <!-- full product catalog -->
+    <h2 class="section-title">✨ our complete catalog ✨</h2>
+    <div class="category-tag"><i class="fas fa-lipstick"></i> Cosmetics – Makeup</div>
+    <div class="product-grid" id="cat-makeup"></div>
+    <div class="category-tag"><i class="fas fa-spa"></i> Skincare</div>
+    <div class="product-grid" id="cat-skincare"></div>
+    <div class="category-tag"><i class="fas fa-hand-sparkles"></i> Nail Products</div>
+    <div class="product-grid" id="cat-nail"></div>
+    <div class="category-tag"><i class="fas fa-user"></i> Wigs & Extensions</div>
+    <div class="product-grid" id="cat-wigs"></div>
+    <div class="category-tag"><i class="fas fa-oil-can"></i> Wig Care & Installation</div>
+    <div class="product-grid" id="cat-wigcare"></div>
+    <div class="category-tag"><i class="fas fa-tools"></i> Wig Tools & Accessories</div>
+    <div class="product-grid" id="cat-wigtools"></div>
+    <div class="category-tag"><i class="fas fa-wind"></i> Styling Equipment</div>
+    <div class="product-grid" id="cat-styling"></div>
+    <div class="category-tag"><i class="fas fa-smile"></i> Spa Add‑ons / Lashes</div>
+    <div class="product-grid" id="cat-spa"></div>
+  </div>
+
+  <!-- cart panel -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-panel">
+      <div class="cart-header"><span>Your Glam Cart 🛍️</span><button class="close-cart" id="closeCartBtn">&times;</button></div>
+      <ul class="cart-items" id="cartItemsList"></ul>
+      <div class="cart-total" id="cartTotal">KSh 0.00</div>
+      <button class="checkout-btn" id="checkoutWhatsApp"><i class="fab fa-whatsapp"></i> Checkout via WhatsApp</button>
+      <p style="font-size:0.8rem; margin-top:12px;">Order summary sent to +254790617211</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div><h4>Glam by Tanya</h4><p>Luxury wigs, beauty & beyond. Nairobi & Kenya delivery.</p><i class="fab fa-instagram"></i> <i class="fab fa-facebook-f"></i> <i class="fab fa-pinterest-p"></i></div>
+        <div><h4>Quick links</h4><ul><li><a href="#">About Us</a></li><li><a href="#">FAQs</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li></ul></div>
+        <div><h4>Contact</h4><p><i class="fas fa-envelope"></i> hello@glambytanya.com</p><p><i class="fas fa-phone-alt"></i> +254 790 617211</p></div>
+        <div><h4>Newsletter</h4><p>10% off first order</p><div class="newsletter-input"><input type="email" placeholder="Your email"><button>→</button></div></div>
+      </div>
+      <div class="copyright">© 2026 Glam by Tanya — complete beauty store</div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // PRODUCT MASTER LIST
+      const products = [
+        { cat: 'makeup', name: 'Foundation', price: 1250, id: 'mk1' },{ cat: 'makeup', name: 'Concealer', price: 850, id: 'mk2' },
+        { cat: 'makeup', name: 'Compact Powder', price: 950, id: 'mk3' },{ cat: 'makeup', name: 'Blush', price: 700, id: 'mk4' },
+        { cat: 'makeup', name: 'Bronzer', price: 990, id: 'mk5' },{ cat: 'makeup', name: 'Highlighter', price: 820, id: 'mk6' },
+        { cat: 'makeup', name: 'Eyeshadow palette', price: 2100, id: 'mk7' },{ cat: 'makeup', name: 'Eyeliner', price: 550, id: 'mk8' },
+        { cat: 'makeup', name: 'Mascara', price: 890, id: 'mk9' },{ cat: 'makeup', name: 'Eyebrow pencil', price: 480, id: 'mk10' },
+        { cat: 'makeup', name: 'Lipstick', price: 750, id: 'mk11' },{ cat: 'makeup', name: 'Lip gloss', price: 620, id: 'mk12' },
+        { cat: 'makeup', name: 'Lip oil', price: 680, id: 'mk13' },{ cat: 'skincare', name: 'Face cleanser (gel)', price: 890, id: 'sk1' },
+        { cat: 'skincare', name: 'Toner', price: 1050, id: 'sk2' },{ cat: 'skincare', name: 'Vitamin C serum', price: 1650, id: 'sk3' },
+        { cat: 'skincare', name: 'Hyaluronic Acid serum', price: 1490, id: 'sk4' },{ cat: 'skincare', name: 'Niacinamide serum', price: 1350, id: 'sk5' },
+        { cat: 'skincare', name: 'Face moisturizer', price: 1100, id: 'sk6' },{ cat: 'skincare', name: 'Sunscreen SPF 50', price: 1250, id: 'sk7' },
+        { cat: 'skincare', name: 'Clay mask', price: 990, id: 'sk8' },{ cat: 'skincare', name: 'Sheet masks (pack)', price: 650, id: 'sk9' },
+        { cat: 'skincare', name: 'Exfoliator scrub', price: 870, id: 'sk10' },{ cat: 'skincare', name: 'Eye cream', price: 1150, id: 'sk11' },
+        { cat: 'skincare', name: 'Lip mask', price: 550, id: 'sk12' },{ cat: 'skincare', name: 'Face oil', price: 1450, id: 'sk13' },
+        { cat: 'skincare', name: 'Acne treatment', price: 1250, id: 'sk14' },{ cat: 'nail', name: 'Gel nail polish', price: 650, id: 'na1' },
+        { cat: 'nail', name: 'Acrylic nail kit', price: 2800, id: 'na2' },{ cat: 'nail', name: 'Nail extensions (tips)', price: 450, id: 'na3' },
+        { cat: 'nail', name: 'Nail glue', price: 320, id: 'na4' },{ cat: 'nail', name: 'Nail art kit', price: 1250, id: 'na5' },
+        { cat: 'nail', name: 'Cuticle oil', price: 490, id: 'na6' },{ cat: 'nail', name: 'Nail strengthener', price: 720, id: 'na7' },
+        { cat: 'nail', name: 'UV/LED nail lamp', price: 4300, id: 'na8' },{ cat: 'nail', name: 'Nail files & buffers', price: 380, id: 'na9' },
+        { cat: 'wigs', name: 'Human hair wig', price: 12500, id: 'wi1' },{ cat: 'wigs', name: 'Synthetic wig', price: 3200, id: 'wi2' },
+        { cat: 'wigs', name: 'Lace front wig', price: 8900, id: 'wi3' },{ cat: 'wigs', name: 'Full lace wig', price: 15500, id: 'wi4' },
+        { cat: 'wigs', name: '360 lace wig', price: 14300, id: 'wi5' },{ cat: 'wigs', name: 'Closure wig', price: 7200, id: 'wi6' },
+        { cat: 'wigs', name: 'Frontal wig', price: 11500, id: 'wi7' },{ cat: 'wigs', name: 'Bob wig', price: 5200, id: 'wi8' },
+        { cat: 'wigs', name: 'Curly wig', price: 8900, id: 'wi9' },{ cat: 'wigs', name: 'Straight wig', price: 8200, id: 'wi10' },
+        { cat: 'wigs', name: 'Afro wig', price: 6100, id: 'wi11' },{ cat: 'wigs', name: 'Colored wig (ombre)', price: 9700, id: 'wi12' },
+        { cat: 'wigs', name: 'Headband wig', price: 4400, id: 'wi13' },{ cat: 'wigs', name: 'Brazilian bundles (3pcs)', price: 12500, id: 'ex1' },
+        { cat: 'wigs', name: 'Clip‑ins', price: 2900, id: 'ex2' },{ cat: 'wigs', name: 'Ponytail', price: 1800, id: 'ex3' },
+        { cat: 'wigs', name: 'Braided wig', price: 3800, id: 'ex4' },{ cat: 'wigcare', name: 'Wig shampoo', price: 860, id: 'wc1' },
+        { cat: 'wigcare', name: 'Wig conditioner', price: 890, id: 'wc2' },{ cat: 'wigcare', name: 'Wig shine spray', price: 750, id: 'wc3' },
+        { cat: 'wigcare', name: 'Detangling spray', price: 690, id: 'wc4' },{ cat: 'wigcare', name: 'Castor oil', price: 480, id: 'wc5' },
+        { cat: 'wigcare', name: 'Argan oil', price: 1250, id: 'wc6' },{ cat: 'wigcare', name: 'Heat protectant spray', price: 940, id: 'wc7' },
+        { cat: 'wigcare', name: 'Wig glue', price: 650, id: 'wc8' },{ cat: 'wigcare', name: 'Lace glue', price: 780, id: 'wc9' },
+        { cat: 'wigcare', name: 'Wig adhesive spray', price: 1290, id: 'wc10' },{ cat: 'wigcare', name: 'Glue remover', price: 550, id: 'wc11' },
+        { cat: 'wigcare', name: 'Wig tape', price: 420, id: 'wc12' },{ cat: 'wigcare', name: 'Edge control gel', price: 590, id: 'wc13' },
+        { cat: 'wigcare', name: 'Wax stick', price: 360, id: 'wc14' },{ cat: 'wigtools', name: 'Wig cap', price: 220, id: 'wt1' },
+        { cat: 'wigtools', name: 'Wig grip', price: 450, id: 'wt2' },{ cat: 'wigtools', name: 'Edge brush', price: 290, id: 'wt3' },
+        { cat: 'wigtools', name: 'Detangling brush', price: 680, id: 'wt4' },{ cat: 'wigtools', name: 'Tweezers (lace pluck)', price: 350, id: 'wt5' },
+        { cat: 'wigtools', name: 'Scissors', price: 420, id: 'wt6' },{ cat: 'wigtools', name: 'Hair clips (set)', price: 380, id: 'wt7' },
+        { cat: 'wigtools', name: 'Rat‑tail comb', price: 210, id: 'wt8' },{ cat: 'wigtools', name: 'Spray bottle', price: 320, id: 'wt9' },
+        { cat: 'styling', name: 'Hair dryer', price: 3600, id: 'se1' },{ cat: 'styling', name: 'Curling iron', price: 2750, id: 'se2' },
+        { cat: 'styling', name: 'Flat iron', price: 2950, id: 'se3' },{ cat: 'styling', name: 'Hot comb', price: 1350, id: 'se4' },
+        { cat: 'styling', name: 'Wig stand', price: 950, id: 'se5' },{ cat: 'styling', name: 'Tripod stand', price: 1800, id: 'se6' },
+        { cat: 'spa', name: 'Facial kit', price: 2150, id: 'sp1' },{ cat: 'spa', name: 'Face steamer', price: 5400, id: 'sp2' },
+        { cat: 'spa', name: 'Massage oil', price: 720, id: 'sp3' },{ cat: 'spa', name: 'Body scrub', price: 990, id: 'sp4' },
+        { cat: 'spa', name: 'Body lotion', price: 860, id: 'sp5' },{ cat: 'spa', name: 'Waxing kit', price: 2350, id: 'sp6' },
+        { cat: 'spa', name: 'Eyelash extensions', price: 650, id: 'sp7' },{ cat: 'spa', name: 'Lash glue', price: 390, id: 'sp8' },
+        { cat: 'spa', name: 'Lash kit (full)', price: 2200, id: 'sp9' }
+      ];
+
+      // Render products
+      const containers = { makeup:'cat-makeup', skincare:'cat-skincare', nail:'cat-nail', wigs:'cat-wigs', wigcare:'cat-wigcare', wigtools:'cat-wigtools', styling:'cat-styling', spa:'cat-spa' };
+      for (let cat in containers) {
+        const container = document.getElementById(containers[cat]);
+        if (!container) continue;
+        products.filter(p => p.cat === cat).forEach(prod => {
+          const div = document.createElement('div');
+          div.className = 'product-item';
+          div.dataset.name = prod.name; div.dataset.price = prod.price; div.dataset.id = prod.id;
+          div.innerHTML = `<div class="product-img"><i class="fas fa-box-open"></i></div><h4>${prod.name}</h4><div class="price">KSh ${prod.price}</div><button class="add-to-cart">Add to Cart</button>`;
+          container.appendChild(div);
+        });
+      }
+
+      // CART
+      let cart = [];
+      const cartOverlay = document.getElementById('cartOverlay'), cartToggle = document.getElementById('cartToggle'), closeCartBtn = document.getElementById('closeCartBtn'), cartItemsList = document.getElementById('cartItemsList'), cartTotalSpan = document.getElementById('cartTotal'), cartCountSpan = document.getElementById('cartCount'), checkoutBtn = document.getElementById('checkoutWhatsApp');
+      function renderCart() {
+        const totalItems = cart.reduce((acc,i)=>acc+i.quantity,0);
+        cartCountSpan.textContent = totalItems;
+        if (!cart.length) { cartItemsList.innerHTML = '<li style="list-style:none; padding:12px;">Cart empty</li>'; cartTotalSpan.textContent='KSh 0.00'; return; }
+        let html='', total=0;
+        cart.forEach((item,idx)=>{ total+=item.price*item.quantity; html+=`<li class="cart-item"><div><strong>${item.name}</strong><br>KSh ${item.price} x${item.quantity}</div><button class="cart-item-remove" data-index="${idx}">✕</button></li>`; });
+        cartItemsList.innerHTML=html; cartTotalSpan.textContent=`KSh ${total.toFixed(2)}`;
+        document.querySelectorAll('.cart-item-remove').forEach(btn=>btn.addEventListener('click',(e)=>{ const idx=e.target.getAttribute('data-index'); if(idx!==null){ cart.splice(parseInt(idx),1); renderCart(); } }));
+      }
+      window.addToCart = function(name, price, id) { const existing = cart.find(i=>i.id===id); existing ? existing.quantity++ : cart.push({ id, name, price, quantity:1 }); renderCart(); cartOverlay.style.display='flex'; };
+      document.body.addEventListener('click',(e)=>{ if(e.target.classList.contains('add-to-cart')){ const p=e.target.closest('.product-item'); if(p) addToCart(p.dataset.name, parseFloat(p.dataset.price), p.dataset.id); } });
+      cartToggle.addEventListener('click',()=>cartOverlay.style.display='flex');
+      closeCartBtn.addEventListener('click',()=>cartOverlay.style.display='none');
+      checkoutBtn.addEventListener('click',()=>{ if(!cart.length) return alert('Cart empty'); let lines=[],t=0; cart.forEach(i=>{ let s=i.price*i.quantity; t+=s; lines.push(`• ${i.name} x${i.quantity} = KSh ${s}`); }); const msg=`🛒 ORDER\n${lines.join('\n')}\nTOTAL: KSh ${t}`; window.open(`https://wa.me/254790617211?text=${encodeURIComponent(msg)}`); });
+
+      // MOBILE NAVIGATION - FULLY WORKING
+      const hamburger = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMobileBtn = document.getElementById('closeMobileBtn');
+      const overlayBg = document.getElementById('overlayBg');
+      function openMobileMenu() { mobileMenu.classList.add('active'); overlayBg.classList.add('active'); document.body.style.overflow = 'hidden'; }
+      function closeMobileMenu() { mobileMenu.classList.remove('active'); overlayBg.classList.remove('active'); document.body.style.overflow = ''; }
+      hamburger.addEventListener('click', openMobileMenu);
+      closeMobileBtn.addEventListener('click', closeMobileMenu);
+      overlayBg.addEventListener('click', closeMobileMenu);
+      document.querySelectorAll('.mobile-links-container a').forEach(link => { link.addEventListener('click', closeMobileMenu); });
+
+      // SEARCH FUNCTIONALITY
+      const searchInput = document.getElementById('searchInput'), searchReport = document.getElementById('searchReport'), clearBtn = document.getElementById('searchClearBtn');
+      const searchable = products.map(p => ({ name: p.name, cat: p.cat, price: p.price, id: p.id, lowerName: p.name.toLowerCase() }));
+      function hideSearch() { searchReport.classList.remove('active'); searchInput.value = ''; clearBtn.classList.remove('visible'); }
+      function fetchResults() {
+        const query = searchInput.value.trim();
+        if (query === '') { searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); return; }
+        clearBtn.classList.add('visible');
+        let matches = searchable.filter(p => p.lowerName.includes(query.toLowerCase())).slice(0,8);
+        if (matches.length === 0) { searchReport.innerHTML = `<div class="no-result">No products found for "${query}"</div>`; }
+        else {
+          let html = `<div style="margin-bottom:8px;">🔎 ${matches.length} result(s)</div>`;
+          matches.forEach(m => { html += `<div class="result-item" data-id="${m.id}"><div class="result-info"><span class="result-name">${m.name}</span><span class="result-cat">${m.cat}</span><span class="result-price">KSh ${m.price}</span></div><button class="result-add-btn" data-id="${m.id}" data-name="${m.name}" data-price="${m.price}">Add</button></div>`; });
+          searchReport.innerHTML = html;
+          document.querySelectorAll('.result-item').forEach(row => {
+            const id = row.dataset.id;
+            row.addEventListener('click', (e) => { if (e.target.classList.contains('result-add-btn')) return; const target = document.querySelector(`.product-item[data-id="${id}"]`); if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('highlight'); setTimeout(() => target.classList.remove('highlight'), 2000); hideSearch(); } });
+          });
+          document.querySelectorAll('.result-add-btn').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const id = btn.dataset.id, name = btn.dataset.name, price = parseFloat(btn.dataset.price); addToCart(name, price, id); hideSearch(); }); });
+        }
+        searchReport.classList.add('active');
+      }
+      searchInput.addEventListener('input', fetchResults);
+      clearBtn.addEventListener('click', () => { searchInput.value = ''; searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); searchInput.focus(); });
+      document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !searchReport.contains(e.target) && !clearBtn.contains(e.target)) { searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); } });
+    })();
+  </script>
+</body>
+</html>

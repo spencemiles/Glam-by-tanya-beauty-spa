@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Glam by Tanya · Contact Us</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- RESET & GLOBAL ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #fcf9f5; color: #2e241f; overflow-x: hidden; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+    /* top bar */
+    .top-bar {
+      background: #1e3a3a; color: #f0eee7; padding: 8px 0; font-size: 0.9rem;
+    }
+    .top-bar .container { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    .top-delivery span { margin-right: 20px; }
+    .top-delivery i { margin-right: 6px; color: #d4b28c; }
+    .mpesa-badge { background: #1b5e3f; padding: 4px 12px; border-radius: 30px; color: white; font-size: 0.8rem; white-space: nowrap; }
+
+    /* ----- NAVBAR (DESKTOP + FULLY WORKING MOBILE) ----- */
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between; padding: 20px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .logo {
+      font-size: 2.2rem; font-weight: 600; font-family: 'Playfair Display', serif;
+      background: linear-gradient(145deg, #8b5e3c, #5f3e28);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.2;
+    }
+
+    /* desktop nav links */
+    .nav-links {
+      display: flex; gap: 32px; font-weight: 500;
+    }
+    .nav-links a { text-decoration: none; color: #3f332b; transition: 0.2s; }
+    .nav-links a:hover { color: #a67b56; }
+    .nav-links a.active {
+      color: #8b5e3c; font-weight: 600; border-bottom: 2px solid #b48c6f; padding-bottom: 4px;
+    }
+
+    .nav-icons {
+      display: flex; gap: 26px; font-size: 1.3rem; color: #4f3e32; position: relative;
+      align-items: center;
+    }
+    .cart-badge {
+      position: absolute; top: -10px; right: -10px; background: #c72a2a; color: white; border-radius: 50%;
+      width: 20px; height: 20px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold;
+    }
+
+    /* HAMBURGER BUTTON */
+    .hamburger {
+      display: none; font-size: 2rem; cursor: pointer; color: #4f3e32; margin-left: 15px;
+      transition: transform 0.1s ease;
+    }
+    .hamburger:active { transform: scale(0.96); }
+
+    /* MOBILE MENU OVERLAY - 100% WORKING */
+    .mobile-menu-overlay {
+      position: fixed; top: 0; left: -100%; width: 85%; max-width: 360px; height: 100vh;
+      background: #fffcf8; box-shadow: 4px 0 28px rgba(0,0,0,0.2); z-index: 2000;
+      transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); padding: 30px 28px; overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .mobile-menu-overlay.active { left: 0; }
+    .close-mobile {
+      font-size: 2.8rem; background: none; border: none; color: #5f4d3f; margin-bottom: 20px; 
+      cursor: pointer; align-self: flex-end; line-height: 1; transition: opacity 0.2s;
+    }
+    .close-mobile:hover { opacity: 0.7; }
+    .mobile-links-container {
+      display: flex; flex-direction: column; gap: 28px;
+    }
+    .mobile-links-container a {
+      text-decoration: none; font-size: 1.5rem; font-weight: 500; color: #3f332b; 
+      border-bottom: 1px solid #e6d5c8; padding-bottom: 12px; transition: 0.2s;
+      display: inline-block;
+    }
+    .mobile-links-container a.active {
+      color: #8b5e3c;
+      border-bottom-color: #8b5e3c;
+      font-weight: 600;
+    }
+    .mobile-footer-icons {
+      margin-top: 40px; padding-top: 20px; border-top: 1px solid #eedbcb;
+      display: flex; gap: 24px; font-size: 1.5rem; color: #8b6f55;
+    }
+    .overlay-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px); z-index: 1999; display: none; transition: 0.2s;
+    }
+    .overlay-bg.active { display: block; }
+
+    /* ----- CONTACT HERO ----- */
+    .contact-hero {
+      background: linear-gradient(135deg, #f4eae1, #fcf3ea);
+      border-radius: 40px;
+      margin: 30px 0 40px;
+      padding: 50px 40px;
+      text-align: center;
+      box-shadow: 0 20px 35px -10px rgba(110,70,40,0.15);
+    }
+    .contact-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 4.2rem);
+      color: #2b1e14;
+      margin-bottom: 15px;
+    }
+    .contact-hero h1 i { color: #b48c6f; margin-right: 15px; }
+    .contact-hero p {
+      font-size: 1.2rem;
+      color: #5f4d3f;
+      max-width: 700px;
+      margin: 0 auto;
+      border-left: 5px solid #b48c6f;
+      padding-left: 20px;
+      font-weight: 300;
+    }
+
+    /* ----- CONTACT GRID (info + form) ----- */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 40px;
+      margin: 50px 0 60px;
+    }
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    .info-card {
+      background: white;
+      border-radius: 30px;
+      padding: 28px 25px;
+      box-shadow: 0 15px 25px -12px rgba(100,70,40,0.1);
+      border: 1px solid #f0e3d8;
+      transition: 0.2s;
+    }
+    .info-card:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -12px #9b7f64; }
+    .info-icon { font-size: 2.2rem; color: #b48c6f; margin-bottom: 15px; }
+    .info-card h3 { font-size: 1.5rem; font-family: 'Playfair Display', serif; margin-bottom: 12px; }
+    .info-card p { color: #5f4e41; line-height: 1.7; margin-bottom: 5px; }
+    .detail-row { display: flex; align-items: center; gap: 12px; margin-top: 15px; color: #3f332b; }
+    .detail-row i { width: 22px; color: #8b5e3c; }
+    .social-links { display: flex; gap: 20px; margin-top: 15px; }
+    .social-links a { color: #8b5e3c; font-size: 1.8rem; transition: 0.2s; }
+    .social-links a:hover { color: #b48c6f; transform: scale(1.1); }
+
+    /* contact form */
+    .contact-form-card {
+      background: white;
+      border-radius: 40px;
+      padding: 40px 35px;
+      box-shadow: 0 20px 35px -15px rgba(80,60,40,0.2);
+      border: 1px solid #f0e3d8;
+    }
+    .form-title { font-size: 2rem; font-family: 'Playfair Display', serif; margin-bottom: 10px; }
+    .form-sub { color: #6b5a4c; margin-bottom: 30px; }
+    .form-group { margin-bottom: 22px; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 8px; color: #3f332b; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #e7d2c0;
+      border-radius: 60px;
+      font-size: 1rem;
+      outline: none;
+      background: #fefcf9;
+      transition: 0.2s;
+    }
+    .form-group textarea { border-radius: 30px; resize: vertical; min-height: 130px; }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #b48c6f;
+      box-shadow: 0 0 0 3px rgba(180,140,111,0.2);
+    }
+    .submit-btn {
+      background: #8b5e3c;
+      border: none;
+      color: white;
+      padding: 16px 40px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .submit-btn:hover { background: #6f4b2f; gap: 16px; }
+
+    /* map section */
+    .map-section { margin: 60px 0 70px; }
+    .map-container {
+      border-radius: 40px;
+      overflow: hidden;
+      height: 400px;
+      background: #e7dbcf;
+      border: 2px solid #f0e3d8;
+      box-shadow: 0 18px 30px -12px #ad8b70;
+    }
+    .map-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #dac9bb;
+      color: #4f3e32;
+      font-size: 1.5rem;
+    }
+    .map-placeholder i { font-size: 4rem; color: #8b5e3c; margin-bottom: 15px; }
+
+    /* FAQ mini section */
+    .faq-section {
+      background: #f5ede4;
+      border-radius: 40px;
+      padding: 50px 40px;
+      margin: 50px 0;
+    }
+    .faq-section h2 {
+      font-size: 2.2rem;
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+    .faq-item {
+      background: white;
+      border-radius: 25px;
+      padding: 22px;
+      box-shadow: 0 8px 18px -8px rgba(0,0,0,0.05);
+    }
+    .faq-item h4 { font-size: 1.2rem; margin-bottom: 12px; color: #2e241f; }
+    .faq-item p { color: #5f4e41; font-size: 0.95rem; line-height: 1.6; }
+
+    /* cart panel & footer */
+    .cart-overlay {
+      position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px); z-index: 3000; display: none; justify-content: flex-end;
+    }
+    .cart-panel {
+      width: 400px; max-width: 90vw; background: #fffcf8; height: 100vh; padding: 28px 24px;
+      overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    }
+    .cart-header {
+      display: flex; justify-content: space-between; align-items: center; font-size: 1.8rem; margin-bottom: 24px;
+    }
+    .close-cart { background: none; border: none; font-size: 2.5rem; cursor: pointer; color: #5f4d3f; }
+    .cart-items { list-style: none; }
+    .cart-item {
+      display: flex; justify-content: space-between; background: #f1eae2; padding: 14px 16px;
+      border-radius: 20px; margin-bottom: 12px; align-items: center;
+    }
+    .cart-item-remove {
+      background: #e2cfc0; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer;
+    }
+    .cart-total { font-size: 1.6rem; font-weight: 700; margin: 20px 0; text-align: right; }
+    .checkout-btn {
+      background: #25D366; border: none; color: white; padding: 16px; border-radius: 60px; font-weight: 700;
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+      width: 100%;
+    }
+
+    footer {
+      background: #e7dbcf; border-radius: 40px 40px 0 0; padding: 50px 0 30px; margin-top: 70px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 30px;
+    }
+    .newsletter-input { display: flex; background: white; border-radius: 60px; overflow: hidden; margin-top: 16px; }
+    .newsletter-input input { flex: 1; border: none; padding: 12px 16px; outline: none; }
+    .newsletter-input button { background: #8b5e3c; border: none; color: white; padding: 0 22px; font-weight: 600; cursor: pointer; }
+    .copyright { text-align: center; border-top: 1px solid #ccbbac; margin-top: 40px; padding-top: 24px; }
+
+    /* search bar */
+    .search-section {
+      background: #ffffffd9;
+      backdrop-filter: blur(4px);
+      padding: 16px 0 8px 0;
+      border-bottom: 1px solid #eedbcb;
+      position: sticky;
+      top: 0;
+      z-index: 1800;
+    }
+    .search-wrapper {
+      display: flex; align-items: center; gap: 10px; max-width: 700px; margin: 0 auto;
+      background: white; border-radius: 60px; border: 1px solid #e7d2c0; padding: 0 18px;
+    }
+    #searchInput {
+      width: 100%; padding: 14px 6px 14px 0; border: none; font-size: 1.05rem; background: transparent; outline: none;
+    }
+    .search-clear { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #9b7f64; display: none; }
+    .search-clear.visible { display: block; }
+    .search-report {
+      max-width: 700px; margin: 6px auto 0; background: white; border-radius: 28px;
+      box-shadow: 0 16px 30px -10px #bd9f87; padding: 16px 20px; display: none; border: 1px solid #ecd9cb;
+      max-height: 380px; overflow-y: auto;
+    }
+    .search-report.active { display: block; }
+    .result-item { display: flex; align-items: center; justify-content: space-between; padding: 8px; cursor: pointer; border-bottom: 1px solid #f1e2d6; }
+    .result-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .result-name { font-weight: 500; }
+    .result-cat { background: #f2e4d8; border-radius: 30px; padding: 4px 12px; font-size: 0.7rem; }
+    .result-price { font-weight: 600; color: #8b5e3c; }
+    .result-add-btn { background: #8b5e3c; border: none; color: white; padding: 6px 16px; border-radius: 40px; font-size: 0.8rem; cursor: pointer; }
+
+    @media (max-width: 800px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: inline-block; }
+      .navbar .nav-icons { order: 2; }
+      .hamburger { order: 3; }
+      .logo { order: 1; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .contact-hero p { border-left: none; border-top: 3px solid #b48c6f; padding: 15px 0 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay-bg" id="overlayBg"></div>
+  <!-- MOBILE MENU (FULLY FUNCTIONAL) -->
+  <div class="mobile-menu-overlay" id="mobileMenu">
+    <button class="close-mobile" id="closeMobileBtn" aria-label="Close menu">&times;</button>
+    <div class="mobile-links-container">
+      <a href="index.html">Home</a>
+      <a href="aboutus.html">About us</a>
+      <a href="services.html">Our services</a>
+      <a href="blog.html">Blog</a>
+      <a href="contactus.html" class="active">Contact</a>
+    </div>
+    <div class="mobile-footer-icons">
+      <i class="fab fa-instagram"></i>
+      <i class="fab fa-facebook-f"></i>
+      <i class="fab fa-whatsapp"></i>
+    </div>
+  </div>
+
+  <!-- top bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-delivery"><span><i class="fas fa-truck"></i> Nairobi 24h – M-PESA on delivery</span><span><i class="fas fa-map-pin"></i> Nairobi CBD, Dynamic Mall</span></div>
+      <div class="mpesa-badge"><i class="fas fa-mobile-alt"></i> Till: 6055407</div>
+    </div>
+  </div>
+
+  <!-- SEARCH BAR (functional product search) -->
+  <div class="search-section">
+    <div class="container" style="max-width: 900px;">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search products... (wigs, makeup, etc.)">
+        <button class="search-clear" id="searchClearBtn"><i class="fas fa-times-circle"></i></button>
+      </div>
+      <div class="search-report" id="searchReport"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- navbar with active "Contact" link -->
+    <nav class="navbar">
+      <div class="logo">Glam By Tanya</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About us</a>
+        <a href="services.html">Our services</a>
+        <a href="blog.html">Blog</a>
+        <a href="contactus.html" class="active">Contact</a>
+      </div>
+      <div class="nav-icons">
+        <i class="fas fa-user"></i>
+        <i class="fas fa-shopping-bag" id="cartToggle"></i>
+        <span class="cart-badge" id="cartCount">0</span>
+      </div>
+      <div class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</div>
+    </nav>
+
+    <!-- CONTACT HERO -->
+    <section class="contact-hero">
+      <h1><i class="fas fa-phone-alt"></i> Get in Touch</h1>
+      <p>We'd love to hear from you — whether it's a question, booking, or just to say hello.</p>
+    </section>
+
+    <!-- CONTACT GRID: info cards + form -->
+    <div class="contact-grid">
+      <!-- left side: info cards -->
+      <div class="contact-info">
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <h3>Visit us</h3>
+          <p>Dynamic Mall, 1st Floor, Shop ML64<br>Nairobi CBD, Kenya</p>
+          <div class="detail-row"><i class="fas fa-clock"></i> Mon–Sat: 9am – 7pm</div>
+          <div class="detail-row"><i class="fas fa-clock"></i> Sunday: 10am – 4pm</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-phone"></i></div>
+          <h3>Call / WhatsApp</h3>
+          <div class="detail-row"><i class="fas fa-phone-alt"></i> +254 790 617211</div>
+          <div class="detail-row"><i class="fab fa-whatsapp"></i> +254 790 617211 (same)</div>
+          <p style="margin-top:12px;">Quick replies on WhatsApp – usually within 1hr.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon"><i class="fas fa-envelope"></i></div>
+          <h3>Email</h3>
+          <div class="detail-row"><i class="fas fa-envelope"></i> hello@glambytanya.com</div>
+          <div class="detail-row"><i class="fas fa-envelope"></i> support@glambytanya.com</div>
+          <p style="margin-top:12px;">We reply within 24h on business days.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Follow us</h3>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-pinterest-p"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+          </div>
+          <p style="margin-top:15px;">Tag @glambytanya for a chance to be featured.</p>
+        </div>
+      </div>
+
+      <!-- right side: contact form -->
+      <div class="contact-form-card">
+        <h2 class="form-title">Send us a message</h2>
+        <div class="form-sub">We'll get back to you as soon as possible.</div>
+        <form id="contactForm" onsubmit="event.preventDefault(); alert('📨 Message sent (demo). We’ll reply soon!'); this.reset();">
+          <div class="form-group">
+            <label>Your name *</label>
+            <input type="text" placeholder="e.g. Wanjiku M." required>
+          </div>
+          <div class="form-group">
+            <label>Email address *</label>
+            <input type="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone (optional)</label>
+            <input type="tel" placeholder="+254 ...">
+          </div>
+          <div class="form-group">
+            <label>I'm interested in...</label>
+            <select>
+              <option>General inquiry</option>
+              <option>Wig consultation</option>
+              <option>Makeup booking</option>
+              <option>Nail appointment</option>
+              <option>Wholesale / business</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Message *</label>
+            <textarea placeholder="Tell us more..."></textarea>
+          </div>
+          <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send message</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MAP SECTION -->
+    <div class="map-section">
+      <div class="map-container">
+        <div class="map-placeholder">
+          <i class="fas fa-map-marked-alt"></i>
+          <p><strong>Dynamic Mall, Nairobi CBD</strong><br>📍 1st Floor, Shop ML64</p>
+          <p style="font-size:1rem; margin-top:15px;"><i class="fas fa-car"></i> Free parking behind the mall</p>
+          <p style="font-size:0.9rem; opacity:0.8;">(Interactive map would be embedded here – demo)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ MINI SECTION -->
+    <div class="faq-section">
+      <h2><i class="fas fa-question-circle"></i> Quick answers</h2>
+      <div class="faq-grid">
+        <div class="faq-item"><h4>Do you offer virtual consultations?</h4><p>Yes! WhatsApp video or Zoom – book via our contact form.</p></div>
+        <div class="faq-item"><h4>What's the response time?</h4><p>We reply within 1 hour during business hours, 24h on weekends.</p></div>
+        <div class="faq-item"><h4>Can I place an order via WhatsApp?</h4><p>Absolutely. Just send us a message and we'll help you.</p></div>
+        <div class="faq-item"><h4>Do you ship outside Nairobi?</h4><p>Yes, we send countrywide via courier. Costs depend on location.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- cart panel -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-panel">
+      <div class="cart-header"><span>Your Glam Cart 🛍️</span><button class="close-cart" id="closeCartBtn">&times;</button></div>
+      <ul class="cart-items" id="cartItemsList"></ul>
+      <div class="cart-total" id="cartTotal">KSh 0.00</div>
+      <button class="checkout-btn" id="checkoutWhatsApp"><i class="fab fa-whatsapp"></i> Checkout via WhatsApp</button>
+      <p style="font-size:0.8rem; margin-top:12px;">Order summary sent to +254790617211</p>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div><h4>Glam by Tanya</h4><p>Luxury wigs, beauty & beyond. Nairobi & Kenya delivery.</p><i class="fab fa-instagram"></i> <i class="fab fa-facebook-f"></i> <i class="fab fa-pinterest-p"></i></div>
+        <div><h4>Quick links</h4><ul><li><a href="#">About Us</a></li><li><a href="#">FAQs</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li></ul></div>
+        <div><h4>Contact</h4><p><i class="fas fa-envelope"></i> hello@glambytanya.com</p><p><i class="fas fa-phone-alt"></i> +254 790 617211</p></div>
+        <div><h4>Newsletter</h4><p>10% off first order</p><div class="newsletter-input"><input type="email" placeholder="Your email"><button>→</button></div></div>
+      </div>
+      <div class="copyright">© 2026 Glam by Tanya — contact us</div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // ---------- PRODUCT MASTER LIST (for search & cart) ----------
+      const products = [
+        { cat: 'makeup', name: 'Foundation', price: 1250, id: 'mk1' },{ cat: 'makeup', name: 'Concealer', price: 850, id: 'mk2' },{ cat: 'makeup', name: 'Compact Powder', price: 950, id: 'mk3' },{ cat: 'makeup', name: 'Blush', price: 700, id: 'mk4' },{ cat: 'makeup', name: 'Bronzer', price: 990, id: 'mk5' },{ cat: 'makeup', name: 'Highlighter', price: 820, id: 'mk6' },{ cat: 'makeup', name: 'Eyeshadow palette', price: 2100, id: 'mk7' },{ cat: 'makeup', name: 'Eyeliner', price: 550, id: 'mk8' },{ cat: 'makeup', name: 'Mascara', price: 890, id: 'mk9' },{ cat: 'makeup', name: 'Eyebrow pencil', price: 480, id: 'mk10' },{ cat: 'makeup', name: 'Lipstick', price: 750, id: 'mk11' },{ cat: 'makeup', name: 'Lip gloss', price: 620, id: 'mk12' },{ cat: 'makeup', name: 'Lip oil', price: 680, id: 'mk13' },{ cat: 'skincare', name: 'Face cleanser (gel)', price: 890, id: 'sk1' },{ cat: 'skincare', name: 'Toner', price: 1050, id: 'sk2' },{ cat: 'skincare', name: 'Vitamin C serum', price: 1650, id: 'sk3' },{ cat: 'skincare', name: 'Hyaluronic Acid serum', price: 1490, id: 'sk4' },{ cat: 'skincare', name: 'Niacinamide serum', price: 1350, id: 'sk5' },{ cat: 'skincare', name: 'Face moisturizer', price: 1100, id: 'sk6' },{ cat: 'skincare', name: 'Sunscreen SPF 50', price: 1250, id: 'sk7' },{ cat: 'skincare', name: 'Clay mask', price: 990, id: 'sk8' },{ cat: 'skincare', name: 'Sheet masks (pack)', price: 650, id: 'sk9' },{ cat: 'skincare', name: 'Exfoliator scrub', price: 870, id: 'sk10' },{ cat: 'skincare', name: 'Eye cream', price: 1150, id: 'sk11' },{ cat: 'skincare', name: 'Lip mask', price: 550, id: 'sk12' },{ cat: 'skincare', name: 'Face oil', price: 1450, id: 'sk13' },{ cat: 'skincare', name: 'Acne treatment', price: 1250, id: 'sk14' },{ cat: 'nail', name: 'Gel nail polish', price: 650, id: 'na1' },{ cat: 'nail', name: 'Acrylic nail kit', price: 2800, id: 'na2' },{ cat: 'nail', name: 'Nail extensions (tips)', price: 450, id: 'na3' },{ cat: 'nail', name: 'Nail glue', price: 320, id: 'na4' },{ cat: 'nail', name: 'Nail art kit', price: 1250, id: 'na5' },{ cat: 'nail', name: 'Cuticle oil', price: 490, id: 'na6' },{ cat: 'nail', name: 'Nail strengthener', price: 720, id: 'na7' },{ cat: 'nail', name: 'UV/LED nail lamp', price: 4300, id: 'na8' },{ cat: 'nail', name: 'Nail files & buffers', price: 380, id: 'na9' },{ cat: 'wigs', name: 'Human hair wig', price: 12500, id: 'wi1' },{ cat: 'wigs', name: 'Synthetic wig', price: 3200, id: 'wi2' },{ cat: 'wigs', name: 'Lace front wig', price: 8900, id: 'wi3' },{ cat: 'wigs', name: 'Full lace wig', price: 15500, id: 'wi4' },{ cat: 'wigs', name: '360 lace wig', price: 14300, id: 'wi5' },{ cat: 'wigs', name: 'Closure wig', price: 7200, id: 'wi6' },{ cat: 'wigs', name: 'Frontal wig', price: 11500, id: 'wi7' },{ cat: 'wigs', name: 'Bob wig', price: 5200, id: 'wi8' },{ cat: 'wigs', name: 'Curly wig', price: 8900, id: 'wi9' },{ cat: 'wigs', name: 'Straight wig', price: 8200, id: 'wi10' },{ cat: 'wigs', name: 'Afro wig', price: 6100, id: 'wi11' },{ cat: 'wigs', name: 'Colored wig (ombre)', price: 9700, id: 'wi12' },{ cat: 'wigs', name: 'Headband wig', price: 4400, id: 'wi13' },{ cat: 'wigs', name: 'Brazilian bundles (3pcs)', price: 12500, id: 'ex1' },{ cat: 'wigs', name: 'Clip‑ins', price: 2900, id: 'ex2' },{ cat: 'wigs', name: 'Ponytail', price: 1800, id: 'ex3' },{ cat: 'wigs', name: 'Braided wig', price: 3800, id: 'ex4' },{ cat: 'wigcare', name: 'Wig shampoo', price: 860, id: 'wc1' },{ cat: 'wigcare', name: 'Wig conditioner', price: 890, id: 'wc2' },{ cat: 'wigcare', name: 'Wig shine spray', price: 750, id: 'wc3' },{ cat: 'wigcare', name: 'Detangling spray', price: 690, id: 'wc4' },{ cat: 'wigcare', name: 'Castor oil', price: 480, id: 'wc5' },{ cat: 'wigcare', name: 'Argan oil', price: 1250, id: 'wc6' },{ cat: 'wigcare', name: 'Heat protectant spray', price: 940, id: 'wc7' },{ cat: 'wigcare', name: 'Wig glue', price: 650, id: 'wc8' },{ cat: 'wigcare', name: 'Lace glue', price: 780, id: 'wc9' },{ cat: 'wigcare', name: 'Wig adhesive spray', price: 1290, id: 'wc10' },{ cat: 'wigcare', name: 'Glue remover', price: 550, id: 'wc11' },{ cat: 'wigcare', name: 'Wig tape', price: 420, id: 'wc12' },{ cat: 'wigcare', name: 'Edge control gel', price: 590, id: 'wc13' },{ cat: 'wigcare', name: 'Wax stick', price: 360, id: 'wc14' },{ cat: 'wigtools', name: 'Wig cap', price: 220, id: 'wt1' },{ cat: 'wigtools', name: 'Wig grip', price: 450, id: 'wt2' },{ cat: 'wigtools', name: 'Edge brush', price: 290, id: 'wt3' },{ cat: 'wigtools', name: 'Detangling brush', price: 680, id: 'wt4' },{ cat: 'wigtools', name: 'Tweezers (lace pluck)', price: 350, id: 'wt5' },{ cat: 'wigtools', name: 'Scissors', price: 420, id: 'wt6' },{ cat: 'wigtools', name: 'Hair clips (set)', price: 380, id: 'wt7' },{ cat: 'wigtools', name: 'Rat‑tail comb', price: 210, id: 'wt8' },{ cat: 'wigtools', name: 'Spray bottle', price: 320, id: 'wt9' },{ cat: 'styling', name: 'Hair dryer', price: 3600, id: 'se1' },{ cat: 'styling', name: 'Curling iron', price: 2750, id: 'se2' },{ cat: 'styling', name: 'Flat iron', price: 2950, id: 'se3' },{ cat: 'styling', name: 'Hot comb', price: 1350, id: 'se4' },{ cat: 'styling', name: 'Wig stand', price: 950, id: 'se5' },{ cat: 'styling', name: 'Tripod stand', price: 1800, id: 'se6' },{ cat: 'spa', name: 'Facial kit', price: 2150, id: 'sp1' },{ cat: 'spa', name: 'Face steamer', price: 5400, id: 'sp2' },{ cat: 'spa', name: 'Massage oil', price: 720, id: 'sp3' },{ cat: 'spa', name: 'Body scrub', price: 990, id: 'sp4' },{ cat: 'spa', name: 'Body lotion', price: 860, id: 'sp5' },{ cat: 'spa', name: 'Waxing kit', price: 2350, id: 'sp6' },{ cat: 'spa', name: 'Eyelash extensions', price: 650, id: 'sp7' },{ cat: 'spa', name: 'Lash glue', price: 390, id: 'sp8' },{ cat: 'spa', name: 'Lash kit (full)', price: 2200, id: 'sp9' }
+      ];
+
+      // ---------- CART LOGIC ----------
+      let cart = [];
+      const cartOverlay = document.getElementById('cartOverlay'), cartToggle = document.getElementById('cartToggle'), closeCartBtn = document.getElementById('closeCartBtn'), cartItemsList = document.getElementById('cartItemsList'), cartTotalSpan = document.getElementById('cartTotal'), cartCountSpan = document.getElementById('cartCount'), checkoutBtn = document.getElementById('checkoutWhatsApp');
+      function renderCart() {
+        const totalItems = cart.reduce((acc,i)=>acc+i.quantity,0);
+        cartCountSpan.textContent = totalItems;
+        if (!cart.length) { cartItemsList.innerHTML = '<li style="list-style:none; padding:12px;">Cart empty</li>'; cartTotalSpan.textContent='KSh 0.00'; return; }
+        let html='', total=0;
+        cart.forEach((item,idx)=>{ total+=item.price*item.quantity; html+=`<li class="cart-item"><div><strong>${item.name}</strong><br>KSh ${item.price} x${item.quantity}</div><button class="cart-item-remove" data-index="${idx}">✕</button></li>`; });
+        cartItemsList.innerHTML=html; cartTotalSpan.textContent=`KSh ${total.toFixed(2)}`;
+        document.querySelectorAll('.cart-item-remove').forEach(btn=>btn.addEventListener('click',(e)=>{ const idx=e.target.getAttribute('data-index'); if(idx!==null){ cart.splice(parseInt(idx),1); renderCart(); } }));
+      }
+      window.addToCart = function(name, price, id) { const e = cart.find(i=>i.id===id); e ? e.quantity++ : cart.push({id,name,price,quantity:1}); renderCart(); cartOverlay.style.display='flex'; };
+      cartToggle.addEventListener('click',()=>cartOverlay.style.display='flex');
+      closeCartBtn.addEventListener('click',()=>cartOverlay.style.display='none');
+      checkoutBtn.addEventListener('click',()=>{ if(!cart.length) return alert('Cart empty'); let lines=[],t=0; cart.forEach(i=>{ let s=i.price*i.quantity; t+=s; lines.push(`• ${i.name} x${i.quantity} = KSh ${s}`); }); const msg=`🛒 ORDER\n${lines.join('\n')}\nTOTAL: KSh ${t}`; window.open(`https://wa.me/254790617211?text=${encodeURIComponent(msg)}`); });
+
+      // ----- MOBILE NAV 100% WORKING -----
+      const hamburger = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMobileBtn = document.getElementById('closeMobileBtn');
+      const overlayBg = document.getElementById('overlayBg');
+      function openMobileMenu() { mobileMenu.classList.add('active'); overlayBg.classList.add('active'); document.body.style.overflow = 'hidden'; }
+      function closeMobileMenu() { mobileMenu.classList.remove('active'); overlayBg.classList.remove('active'); document.body.style.overflow = ''; }
+      hamburger.addEventListener('click', openMobileMenu);
+      closeMobileBtn.addEventListener('click', closeMobileMenu);
+      overlayBg.addEventListener('click', closeMobileMenu);
+      document.querySelectorAll('.mobile-links-container a').forEach(link => { link.addEventListener('click', closeMobileMenu); });
+
+      // ----- SEARCH FUNCTIONALITY -----
+      const searchInput = document.getElementById('searchInput'), searchReport = document.getElementById('searchReport'), clearBtn = document.getElementById('searchClearBtn');
+      const searchable = products.map(p => ({ name: p.name, cat: p.cat, price: p.price, id: p.id, lowerName: p.name.toLowerCase() }));
+      function hideSearch() { searchReport.classList.remove('active'); searchInput.value = ''; clearBtn.classList.remove('visible'); }
+      function fetchResults() {
+        const query = searchInput.value.trim();
+        if (query === '') { searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); return; }
+        clearBtn.classList.add('visible');
+        let matches = searchable.filter(p => p.lowerName.includes(query.toLowerCase())).slice(0,8);
+        if (matches.length === 0) { searchReport.innerHTML = `<div>No products found</div>`; }
+        else {
+          let html = `<div style="margin-bottom:8px;">✨ ${matches.length} result(s)</div>`;
+          matches.forEach(m => { html += `<div class="result-item"><div class="result-info"><span class="result-name">${m.name}</span><span class="result-cat">${m.cat}</span><span class="result-price">KSh ${m.price}</span></div><button class="result-add-btn" data-id="${m.id}" data-name="${m.name}" data-price="${m.price}">Add</button></div>`; });
+          searchReport.innerHTML = html;
+          document.querySelectorAll('.result-add-btn').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const id = btn.dataset.id, name = btn.dataset.name, price = parseFloat(btn.dataset.price); addToCart(name, price, id); hideSearch(); }); });
+        }
+        searchReport.classList.add('active');
+      }
+      searchInput.addEventListener('input', fetchResults);
+      clearBtn.addEventListener('click', () => { searchInput.value = ''; searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); searchInput.focus(); });
+      document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !searchReport.contains(e.target) && !clearBtn.contains(e.target)) { searchReport.classList.remove('active'); clearBtn.classList.remove('visible'); } });
+    })();
+  </script>
+</body>
+</html>
